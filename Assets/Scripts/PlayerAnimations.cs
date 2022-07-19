@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerAnimations : MonoBehaviour {
     public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping }
@@ -13,32 +10,16 @@ public class PlayerAnimations : MonoBehaviour {
     [SerializeField] private Animator _animator;
     [SerializeField] private PlayerController _playerController;
 
+    public void CharFaceRight() {
+        _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, 90f, _charModelTransform.rotation.z));
+    }
 
-    private void OnEnable() {
-        if (_charModelTransform == null) {
-            Transform[] childTransforms = transform.GetComponentsInChildren<Transform>();
-            
-            foreach(Transform tran in childTransforms) {
-                if (tran.CompareTag("PlayerModel")) { _charModelTransform = tran; }
-            }
-        }
-        
-        if (_animator == null && _charModelTransform != null) { _animator = _charModelTransform.GetComponent<Animator>(); }
-        _animator.SetBool("isIdle", true);
+    public void CharFaceLeft() {
+        _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, -90f, _charModelTransform.rotation.z));
     }
     
-    private void Start() {
-        if (_playerController == null) { _playerController = transform.GetComponent<PlayerController>(); }
-        DoNullChecks();
-    }
-
     public void UpdatePlayerCharAnimState(PlayerCharAnimState playerCharAnimState) {
-        //Reset all Animator parameters to false
-        _animator.SetBool("isIdle", false);
-        _animator.SetBool("isWalking", false);
-        _animator.SetBool("isRunning", false);
-        _animator.SetBool("isJumping", false);
-        _animator.SetBool("isDoubleJumping", false);
+        ResetAnimatorParameters();
         
         //Update _playerCharAnimState
         _playerCharAnimState = playerCharAnimState;
@@ -52,13 +33,34 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerCharAnimState.doubleJumping: _animator.SetBool("isDoubleJumping", true); break;
         }
     }
-
-    public void CharFaceRight() {
-        _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, 90f, _charModelTransform.rotation.z));
+    
+    private void OnEnable() {
+        if (_charModelTransform == null) {
+            Transform[] childTransforms = transform.GetComponentsInChildren<Transform>();
+            
+            foreach(Transform tran in childTransforms) {
+                if (tran.CompareTag("PlayerModel")) { _charModelTransform = tran; }
+            }
+        }
+        
+        if (_animator == null && _charModelTransform != null) { _animator = _charModelTransform.GetComponent<Animator>(); }
+        
+        ResetAnimatorParameters();
+        _animator.SetBool("isIdle", true);
+    }
+    
+    private void Start() {
+        if (_playerController == null) { _playerController = transform.GetComponent<PlayerController>(); }
+        DoNullChecks();
     }
 
-    public void CharFaceLeft() {
-        _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, -90f, _charModelTransform.rotation.z));
+    private void ResetAnimatorParameters() {
+        //Reset all Animator parameters to false
+        _animator.SetBool("isIdle", false);
+        _animator.SetBool("isWalking", false);
+        _animator.SetBool("isRunning", false);
+        _animator.SetBool("isJumping", false);
+        _animator.SetBool("isDoubleJumping", false);
     }
     
     private void DoNullChecks() {

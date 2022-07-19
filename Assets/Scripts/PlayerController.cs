@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Debug = UnityEngine.Debug;
 
 public class PlayerController : MonoBehaviour {
     private CharacterController _controller;
@@ -29,6 +28,9 @@ public class PlayerController : MonoBehaviour {
     private PlayerAnimations.PlayerCharAnimState _animStatePriorToFirstJump;
     private Vector3 _wallCollisionNormal;
     
+    
+    public void EnableMovement() { _movementDisabled = false;}
+    public void DisableMovement() { _movementDisabled = true; }
 
     private void OnEnable() {
         _inputActions = new InputActions();
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnDisable() {
         _inputActions.Player.Movement.performed -= MovementOnPerformed;
+        _inputActions.Player.Jump.started -= JumpOnStarted;
         _inputActions.Player.Jump.canceled -= JumpOnCancelled;
     }
 
@@ -126,7 +129,7 @@ public class PlayerController : MonoBehaviour {
                     _playerCharAnimState = _animStatePriorToFirstJump;
                     break;
             }
-        } else {
+        } else { //is jumping
             if (_isWallJumping) { _playerVelocity.x = _wallCollisionNormal.x * 4; } //horizontal bounce when wall jumping
         } 
         
@@ -138,7 +141,7 @@ public class PlayerController : MonoBehaviour {
             } else { _playerCharAnimState = PlayerAnimations.PlayerCharAnimState.jumping; }
             _playerVelocity.y = Mathf.Sqrt(_jumpHeight * -1.25f * _gravityValue); 
         } else if (_startJump && _isGrounded) { //first jump
-            _animStatePriorToFirstJump = _playerCharAnimState; //track prior anim state for exit or use x.velocity to determine landing idle/walk/run ?
+            _animStatePriorToFirstJump = _playerCharAnimState; //track prior anim state for exitting jump
             _playerCharAnimState = PlayerAnimations.PlayerCharAnimState.jumping;
             _playerVelocity.y += Mathf.Sqrt(_jumpHeight * -3.0f * _gravityValue); 
         } else if (_startJump && !_isGrounded && _currNumOfJumps < 2) { //double jump
@@ -151,12 +154,9 @@ public class PlayerController : MonoBehaviour {
         if (!_isGrounded) { _playerVelocity.y += _gravityValue * Time.deltaTime; } //apply gravity
         if (!_movementDisabled) { MovePlayer(_playerVelocity); }
     }
-
+    
     private void MovePlayer(Vector3 moveVelocity) { _controller.Move(moveVelocity * Time.deltaTime); }
-
-    public void EnableMovement() { _movementDisabled = false;}
-    public void DisableMovement() { _movementDisabled = true; }
-
+    
     private void OnTriggerEnter(Collider other) {
         if (other.tag.ToLower().StartsWith("moving")) { transform.parent = other.transform; }
     }
@@ -197,3 +197,4 @@ public class PlayerController : MonoBehaviour {
         if (_playerAnimations == null) {Debug.LogError("PlayerController::DoNullChecks() _playerAnimations is NULL!");}
     }
 }
+

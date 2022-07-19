@@ -22,3 +22,4 @@ public class LevelManager : MonoBehaviour {
        if (_playerFinishPosition == Vector3.zero) { Debug.Log("LevelManager::DoNullChecks _playerFinishPosition = Vector3.zero!"); }
    }
 }
+
