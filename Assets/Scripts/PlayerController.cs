@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private PlayerAnimations.PlayerCharAnimState _playerCharAnimState;
     [SerializeField] private Vector3 _playerVelocity;
     [SerializeField] private bool _isGrounded;
+    [SerializeField] private bool _hangingInputEnabled;
     [Space]
     [SerializeField] private float _playerRunSpeed;
     [SerializeField] private float _playerWalkSpeed;
@@ -24,19 +26,21 @@ public class PlayerController : MonoBehaviour {
     [Space]
     [SerializeField] private bool _movementDisabled;
     [Space] [SerializeField] private PlayerAnimations _playerAnimations;
+    [SerializeField] private LedgeChecker _ledgeChecker;
     private float _timeSinceWalkStarted;
     private PlayerAnimations.PlayerCharAnimState _animStatePriorToFirstJump;
     private Vector3 _wallCollisionNormal;
-
+    
 
     public PlayerAnimations.PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
-
     public void SetPlayerCharAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState) {
         _playerCharAnimState = playerCharAnimState; 
         _playerAnimations.UpdatePlayerCharAnimState(playerCharAnimState);
     }
     public void EnableMovement() { _movementDisabled = false;}
     public void DisableMovement() { _movementDisabled = true; }
+    public bool GetHangingInputEnabled() { return _hangingInputEnabled; }
+    public void SetHangingInput(bool hangingInputEnabled) { _hangingInputEnabled = hangingInputEnabled; }
 
     private void OnEnable() {
         _inputActions = new InputActions();
@@ -44,6 +48,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Movement.performed += MovementOnPerformed;
         _inputActions.Player.Jump.started += JumpOnStarted;
         _inputActions.Player.Jump.canceled += JumpOnCancelled;
+        _inputActions.Player.Use.performed += UseOnPeformed;
         _currNumOfJumps = 0;
         _movementDisabled = false;
         _canWallJump = false;
@@ -55,6 +60,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Movement.performed -= MovementOnPerformed;
         _inputActions.Player.Jump.started -= JumpOnStarted;
         _inputActions.Player.Jump.canceled -= JumpOnCancelled;
+        _inputActions.Player.Use.performed -= UseOnPeformed;
     }
 
     private void MovementOnPerformed(InputAction.CallbackContext context) { }
@@ -64,22 +70,61 @@ public class PlayerController : MonoBehaviour {
             _canWallJump = false; 
             _isWallJumping = true; 
         } else { //start normal jump
-            _startJump = true;
-            transform.SetParent(null);
+            if (!_hangingInputEnabled) {
+                _startJump = true;
+                transform.SetParent(null);
+            }
         } 
     }
     
     private void JumpOnCancelled(InputAction.CallbackContext context) {
         _currNumOfJumps += 1;
+ 
+        if (_hangingInputEnabled) {
+            UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.hangingDropping);
+            _controller.enabled = true;
+            _playerVelocity = Vector3.zero;
+            _movementDisabled = false;
+            UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.idle, 2f);
+            _hangingInputEnabled = false;
+        }
+    }
+
+    private void UseOnPeformed(InputAction.CallbackContext context) {
+        if (_hangingInputEnabled) {
+            float climbDelay = 3.51f;
+
+            UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.hangingClimbing);
+            StartCoroutine(ClimbDelaySetPlayerGOPosition(climbDelay));
+        }
+    }
+
+    private IEnumerator ClimbDelaySetPlayerGOPosition(float climbDelay) {
+        Vector3 finalPlayerGOPosition;
+        
+        yield return new WaitForSeconds(climbDelay);
+        finalPlayerGOPosition = _playerAnimations.GetAnimator().bodyPosition;
+        finalPlayerGOPosition.y += 0.39254f;
+        UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.idle);
+        _hangingInputEnabled = false;
+        transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity);
+        _playerVelocity = Vector3.zero;
+        _controller.enabled = true;
+        _movementDisabled = false;
     }
     
     void Start() {
         _controller = GetComponent<CharacterController>();
         _playerAnimations = transform.GetComponent<PlayerAnimations>();
+        
+        foreach (Transform tran in transform.GetComponentInChildren<Transform>()) {
+            if (tran.CompareTag("LedgeChecker")) { _ledgeChecker = tran.GetComponent<LedgeChecker>(); }
+        }
+        
         DoNullChecks();
     }
     
-    void FixedUpdate() { DeterminePlayerVelocity(); UpdatePlayerAnimationState(); }
+    void FixedUpdate() { DeterminePlayerVelocity(); UpdatePlayerAnimationState(_playerCharAnimState); }
 
     private void DeterminePlayerVelocity() {
         Vector3 moveDirection = _inputActions.Player.Movement.ReadValue<Vector2>();
@@ -194,13 +239,28 @@ public class PlayerController : MonoBehaviour {
         _isWallJumping = false;
     }
 
-    private void UpdatePlayerAnimationState() { _playerAnimations.UpdatePlayerCharAnimState(_playerCharAnimState); }
+    private void UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState playerCharAnimState)
+    {
+        _playerCharAnimState = playerCharAnimState;
+        _playerAnimations.UpdatePlayerCharAnimState(_playerCharAnimState);
+    }
+
+    private void UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delayUpdateExecution) {
+        StartCoroutine(DelayUpdatePlayerAnimState(playerCharAnimState,delayUpdateExecution));
+    }
+
+    private IEnumerator DelayUpdatePlayerAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delay) {
+        yield return new WaitForSeconds(delay);
+        _playerCharAnimState = playerCharAnimState;
+        _playerAnimations.UpdatePlayerCharAnimState(_playerCharAnimState);
+    }
     
     private void DoNullChecks() {
         if (_playerRunSpeed <= 0) { _playerRunSpeed = 1; Debug.Log("PlayerController::DoNullChecks() _playerSpeed <= 0! Set to 1."); }
         if (_jumpHeight <= 0) { _jumpHeight = 1; Debug.Log("PlayerController::DoNullChecks() _jumpHeight <= 0! Set to 1."); }
         if (_gravityValue == 0) { _gravityValue = -100; Debug.Log("PlayerController::DoNullChecks() _gravityValue <= 0! Set to -100."); }
-        if (_playerAnimations == null) {Debug.LogError("PlayerController::DoNullChecks() _playerAnimations is NULL!");}
+        if (_playerAnimations == null) { Debug.LogError("PlayerController::DoNullChecks() _playerAnimations is NULL!");}
+        if (_ledgeChecker == null) { Debug.LogError("PlayerController::DoNullChecks() _ledgeChecker is NULL!"); }
     }
 }
 

@@ -20,6 +20,8 @@ public class PlayerAnimations : MonoBehaviour {
     }
     
     public PlayerAnimations.PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
+
+    public Animator GetAnimator() { return _animator; }
     
     public void UpdatePlayerCharAnimState(PlayerCharAnimState playerCharAnimState) {
         ResetAnimatorParameters();

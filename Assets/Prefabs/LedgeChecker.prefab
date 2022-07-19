@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 6807427266135657780}
   - component: {fileID: 1627778801034326028}
   - component: {fileID: 6942220221129503505}
-  - component: {fileID: 3537879665493650451}
+  - component: {fileID: 63045366}
   m_Layer: 0
   m_Name: LedgeChecker
-  m_TagString: Untagged
+  m_TagString: LedgeChecker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bc269a5e522da4498336542ba67b450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerTransform: {fileID: 0}
+  _playerController: {fileID: 0}
+  _charController: {fileID: 0}
+  _playerAnimations: {fileID: 0}
+  _ledgeSnapToTransform: {fileID: 0}
+  _movePlayerTowardsSnapTo: 0
+  _snapToMoveSpeed: 99
 --- !u!33 &6807427266135657780
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -111,7 +118,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &3537879665493650451
+--- !u!54 &63045366
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

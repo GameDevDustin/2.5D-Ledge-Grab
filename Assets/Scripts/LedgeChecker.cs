@@ -21,9 +21,7 @@ public class LedgeChecker : MonoBehaviour {
         DoNullChecks();
     }
 
-    private void FixedUpdate() {
-        if (_movePlayerTowardsSnapTo) { MovePlayerTowardsSnapTo(); }
-    }
+    private void FixedUpdate() { if (_movePlayerTowardsSnapTo) { MovePlayerTowardsSnapTo(); } }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("LedgeTrigger")) {
@@ -36,7 +34,13 @@ public class LedgeChecker : MonoBehaviour {
             _playerController.DisableMovement();
             DisableCharController();
             _playerController.SetPlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumpToHanging);
+            StartCoroutine(HangDelay());
         }
+    }
+
+    private IEnumerator HangDelay() {
+        yield return new WaitForSeconds(0.5f);
+        _playerController.SetHangingInput(true);
     }
 
     private void MovePlayerTowardsSnapTo() {
