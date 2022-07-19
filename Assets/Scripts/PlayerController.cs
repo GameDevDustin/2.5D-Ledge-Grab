@@ -27,8 +27,14 @@ public class PlayerController : MonoBehaviour {
     private float _timeSinceWalkStarted;
     private PlayerAnimations.PlayerCharAnimState _animStatePriorToFirstJump;
     private Vector3 _wallCollisionNormal;
-    
-    
+
+
+    public PlayerAnimations.PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
+
+    public void SetPlayerCharAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState) {
+        _playerCharAnimState = playerCharAnimState; 
+        _playerAnimations.UpdatePlayerCharAnimState(playerCharAnimState);
+    }
     public void EnableMovement() { _movementDisabled = false;}
     public void DisableMovement() { _movementDisabled = true; }
 

@@ -9,6 +9,8 @@ TagManager:
   - MovingElevator
   - JumpableWall
   - PlayerModel
+  - LedgeTrigger
+  - LedgeSnapTo
   layers:
   - Default
   - TransparentFX
