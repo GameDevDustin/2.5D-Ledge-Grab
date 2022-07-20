@@ -68,7 +68,13 @@ public class PlayerController : MonoBehaviour {
     private void JumpOnStarted(InputAction.CallbackContext context) {
         if (_canWallJump) { //wall jump, reverse animation state between jumping and double jumping
             _canWallJump = false; 
-            _isWallJumping = true; 
+            _isWallJumping = true;
+            
+            if (_playerAnimations.GetPlayerCharFacingDirection() == PlayerAnimations.PlayerCharFacingDirection.left) {
+                _playerAnimations.SetPlayerCharFacingDirection(PlayerAnimations.PlayerCharFacingDirection.right);
+            } else {
+                _playerAnimations.SetPlayerCharFacingDirection(PlayerAnimations.PlayerCharFacingDirection.left);
+            }
         } else { //start normal jump
             if (!_hangingInputEnabled) {
                 _startJump = true;

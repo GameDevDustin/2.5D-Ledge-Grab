@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour {
     public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing }
+    public enum PlayerCharFacingDirection { left, right }
+
+    [SerializeField] private PlayerCharFacingDirection _playerCharFacingDirection;
     [SerializeField] private PlayerCharAnimState _playerCharAnimState;
     [SerializeField] private Transform _charModelTransform;
     [SerializeField] private Animator _animator;
@@ -19,7 +22,21 @@ public class PlayerAnimations : MonoBehaviour {
         _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, -90f, _charModelTransform.rotation.z));
     }
     
-    public PlayerAnimations.PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
+    public PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
+    public PlayerCharFacingDirection GetPlayerCharFacingDirection() { return _playerCharFacingDirection; }
+
+    public void SetPlayerCharFacingDirection(PlayerCharFacingDirection playerCharFacingDirection) {
+        Vector3 newCharModelRotation;
+        _playerCharFacingDirection = playerCharFacingDirection;
+        
+        if (_playerCharFacingDirection == PlayerCharFacingDirection.left) {
+            newCharModelRotation = new Vector3(0f, -90, 0f);
+            _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(newCharModelRotation));
+        } else {
+            newCharModelRotation = new Vector3(0f, 90, 0f);
+            _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(newCharModelRotation));
+        }
+    }
 
     public Animator GetAnimator() { return _animator; }
     

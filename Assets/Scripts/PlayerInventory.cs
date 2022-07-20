@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour {
@@ -13,6 +14,7 @@ public class PlayerInventory : MonoBehaviour {
     [SerializeField] private Transform _charModelTransform;
     [Space] [SerializeField] private PlayerAnimations _playerAnimations;
 
+
     private void Start() {
         if (_charModelTransform == null) {
             Transform[] childTransforms = transform.GetComponentsInChildren<Transform>();
@@ -21,11 +23,16 @@ public class PlayerInventory : MonoBehaviour {
                 if (tran.CompareTag("PlayerModel")) { _charModelTransform = tran; }
             }
         }
-        
+
         _playerAnimations = transform.GetComponent<PlayerAnimations>();
         DoNullChecks();
         _uiManager.UpdateLivesCount(_numOfLives);
         _uiManager.UpdateCoinCount(_numOfCoins);
+        
+        if (transform.position != _levelManager.GetPlayerStartPosition() //check if Player GO at start position
+            || transform.eulerAngles != _levelManager.GetPlayerStartRotation() //check if PlayerGO at start rotation
+            || _charModelTransform.eulerAngles != _levelManager.GetPlayerCharModelStartRotation())  //check if Player CharModel at Start Rotation
+        { StartCoroutine(RespawnPlayer()); }
     }
 
     private void FixedUpdate() { if (transform.position.y < -50f) { OnDeath(); } }
