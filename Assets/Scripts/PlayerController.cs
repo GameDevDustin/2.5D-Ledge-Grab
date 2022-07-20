@@ -215,7 +215,18 @@ public class PlayerController : MonoBehaviour {
     private void MovePlayer(Vector3 moveVelocity) { _controller.Move(moveVelocity * Time.deltaTime); }
     
     private void OnTriggerEnter(Collider other) {
-        if (other.tag.ToLower().StartsWith("moving")) { transform.parent = other.transform; }
+        if (other.tag.ToLower().StartsWith("moving"))
+        {
+            if (other.tag.ToLower() == "movingelevator")
+            {
+                transform.parent = other.transform.GetChild(0);
+            }
+            else
+            {
+                transform.parent = other.transform;
+            }
+            
+        }
     }
 
     private void OnTriggerExit(Collider other) {

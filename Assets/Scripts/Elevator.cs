@@ -17,7 +17,7 @@ public class Elevator : MonoBehaviour {
 
     private void Start() { DoNullChecks(); }
 
-    private void FixedUpdate() {
+    private void Update() {
         if (_movingUp) { MovingUp(); }
         if (_movingdown) { MovingDown(); }
     }
