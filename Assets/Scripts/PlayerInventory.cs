@@ -31,13 +31,13 @@ public class PlayerInventory : MonoBehaviour {
     private void FixedUpdate() { if (transform.position.y < -50f) { OnDeath(); } }
 
     private void OnTriggerEnter(Collider other) {
-        // if (other.CompareTag("Collectable") && other.name.ToLower().StartsWith("coin")) {
-        //     Coins coinScript = other.GetComponent<Coins>();
-        //
-        //     _numOfCoins += coinScript.GetNumOfCoins();
-        //     _uiManager.UpdateCoinCount(_numOfCoins);
-        //     coinScript.HideCollectable();
-        // }
+        if (other.CompareTag("Collectable") && other.name.ToLower().StartsWith("coin")) {
+            Coin coinScript = other.GetComponent<Coin>();
+        
+            _numOfCoins += coinScript.GetNumOfCoins();
+            _uiManager.UpdateCoinCount(_numOfCoins);
+            coinScript.HideCollectable();
+        }
     }
 
     private void OnDeath() {

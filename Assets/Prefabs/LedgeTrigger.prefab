@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &926435771539234950
+--- !u!1 &2421461256404675318
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 926435771539234969}
-  - component: {fileID: 926435771539234970}
-  - component: {fileID: 926435771539234971}
-  - component: {fileID: 926435771539234968}
+  - component: {fileID: 2421461256404675305}
+  - component: {fileID: 2421461256404675306}
+  - component: {fileID: 2421461256404675307}
+  - component: {fileID: 2421461256404675304}
   m_Layer: 0
   m_Name: LedgeTrigger
   m_TagString: LedgeTrigger
@@ -19,37 +19,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &926435771539234969
+--- !u!4 &2421461256404675305
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926435771539234950}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -4.79, y: -0.11, z: -2.74}
-  m_LocalScale: {x: 12.721009, y: 0.85953, z: 2.224375}
+  m_GameObject: {fileID: 2421461256404675318}
+  m_LocalRotation: {x: 0.70709395, y: 0.000000029802315, z: -0, w: 0.7071195}
+  m_LocalPosition: {x: -4.7900014, y: 74.39012, z: 56.83922}
+  m_LocalScale: {x: 12.721009, y: 0.8595301, z: 2.2243752}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2107297288820319358}
+  - {fileID: 3494514010002812430}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!33 &926435771539234970
+  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0}
+--- !u!33 &2421461256404675306
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926435771539234950}
+  m_GameObject: {fileID: 2421461256404675318}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &926435771539234971
+--- !u!23 &2421461256404675307
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926435771539234950}
+  m_GameObject: {fileID: 2421461256404675318}
   m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -85,20 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &926435771539234968
+--- !u!65 &2421461256404675304
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926435771539234950}
+  m_GameObject: {fileID: 2421461256404675318}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 0.45529068}
-  m_Center: {x: -0.0000000029753007, y: -0.000000005498685, z: -0.05381988}
---- !u!1 &2107297288820319355
+  m_Size: {x: 0.9999998, y: 1.1346499, z: 0.24211012}
+  m_Center: {x: 4.8974247e-10, y: -0.06732503, z: 0.014785566}
+--- !u!1 &3494514010002812427
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2107297288820319358}
+  - component: {fileID: 3494514010002812430}
   m_Layer: 0
   m_Name: LedgeSnapTo
   m_TagString: LedgeSnapTo
@@ -114,18 +114,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2107297288820319358
+--- !u!4 &3494514010002812430
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2107297288820319355}
+  m_GameObject: {fileID: 3494514010002812427}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.078, y: 0.37, z: 1.93}
   m_LocalScale: {x: 3.4902797, y: 1.0175219, z: 0.23583032}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 926435771539234969}
+  m_Father: {fileID: 2421461256404675305}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
