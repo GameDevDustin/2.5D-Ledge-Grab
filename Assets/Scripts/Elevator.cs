@@ -15,6 +15,17 @@ public class Elevator : MonoBehaviour {
     [SerializeField] private bool _movingdown;
 
 
+    public bool GetMovingUp() { return _movingUp; }
+    public bool GetMovingDown() { return _movingdown; }
+    
+    public void MoveUp() {
+        if (_elevatorCurrentPosition != ElevatorPosition.top) { StartCoroutine(MoveElevatorUp()); }
+    }
+    
+    public void MoveDown() {
+        if (_elevatorCurrentPosition != ElevatorPosition.bottom) { StartCoroutine(MoveElevatorDown()); }
+    }
+
     private void Start() { DoNullChecks(); }
 
     private void Update() {
@@ -29,11 +40,7 @@ public class Elevator : MonoBehaviour {
             }
         }
     }
-
-    public void MoveUp() {
-        if (_elevatorCurrentPosition != ElevatorPosition.top) { StartCoroutine(MoveElevatorUp()); }
-    }
-
+    
     private IEnumerator MoveElevatorUp() {
         yield return new WaitForSeconds(2f);
         _movingUp = true;
@@ -44,11 +51,7 @@ public class Elevator : MonoBehaviour {
         if (transform.position == _elevatorTopPosition) { _movingUp = false; }
         transform.position = Vector3.MoveTowards(transform.position, _elevatorTopPosition, _elevatorSpeed * Time.deltaTime);
     }
-
-    public void MoveDown() {
-        if (_elevatorCurrentPosition != ElevatorPosition.bottom) { StartCoroutine(MoveElevatorDown()); }
-    }
-
+    
     private IEnumerator MoveElevatorDown() {
         yield return new WaitForSeconds(2f);
         _movingdown = true;

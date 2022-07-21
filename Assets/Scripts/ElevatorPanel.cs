@@ -14,7 +14,7 @@ public class ElevatorPanel : MonoBehaviour {
     private void Start() { DoNullChecks(); }
     
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player") && !_elevatorScript.GetMovingUp() && !_elevatorScript.GetMovingDown()) {
             // _panelLightTransform.GetComponent<MeshRenderer>().material = _greenLight;
             MeshRenderer meshRenderer = _panelLightTransform.GetComponent<MeshRenderer>();
             meshRenderer.material.EnableKeyword("_EMISSION");
