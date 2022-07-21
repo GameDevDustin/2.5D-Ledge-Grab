@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour {
-    public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing }
+    public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing, ladderClimbing, ladderDropping, ladderTopClimb }
     public enum PlayerCharFacingDirection { left, right }
 
     [SerializeField] private PlayerCharFacingDirection _playerCharFacingDirection;

@@ -39,3 +39,4 @@ public class ElevatorPanel : MonoBehaviour {
         if (_elevatorScript == null) { Debug.LogError("ElevatorPanel::DoNullChecks() _elevatorScript is NULL!");}
     }
 }
+

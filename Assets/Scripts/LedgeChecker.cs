@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -50,9 +49,7 @@ public class LedgeChecker : MonoBehaviour {
     }
 
     private void MovePlayerTowardsSnapTo() {
-        if (_playerTransform.position != _ledgeSnapToTransform.position)
-        {
-            // _ledgeSnapToTransform.SetPositionAndRotation(new Vector3(_ledgeSnapToTransform.position.x, _ledgeSnapToTransform.position.y, 0f) , quaternion.identity);
+        if (_playerTransform.position != _ledgeSnapToTransform.position) {
             _playerTransform.position = Vector3.MoveTowards(_playerTransform.position, _ledgeSnapToTransform.position, _snapToMoveSpeed * Time.deltaTime);
         } else { _movePlayerTowardsSnapTo = false; }
     }

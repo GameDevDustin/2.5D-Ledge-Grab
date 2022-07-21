@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
 
 public class Elevator : MonoBehaviour {
     public enum ElevatorPosition { top, bottom }
@@ -29,16 +27,14 @@ public class Elevator : MonoBehaviour {
 
     private void Start() { DoNullChecks(); }
 
-    private void Update() {
+    private void FixedUpdate() {
         if (_movingUp) { MovingUp(); }
         if (_movingdown) { MovingDown(); }
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
-            if (!_movingUp && !_movingdown) {
-                if (_elevatorCurrentPosition == ElevatorPosition.top) { MoveDown(); } else { MoveUp(); }
-            }
+        if (other.CompareTag("Player") && !_movingUp && !_movingdown) {
+            if (_elevatorCurrentPosition == ElevatorPosition.top) { MoveDown(); } else { MoveUp(); }
         }
     }
     
