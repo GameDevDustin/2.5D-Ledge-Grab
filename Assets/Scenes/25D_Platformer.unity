@@ -23053,7 +23053,8 @@ PrefabInstance:
       propertyPath: m_FollowOffset.z
       value: -12
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9193808691781817974, guid: d351b479af049104aa6c0bcc56665efb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d351b479af049104aa6c0bcc56665efb, type: 3}
 --- !u!1001 &874384151
 PrefabInstance:
@@ -37102,6 +37103,24 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1400261600}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1400352022 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9193808691781817971, guid: d351b479af049104aa6c0bcc56665efb,
+    type: 3}
+  m_PrefabInstance: {fileID: 871661032}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1400352027
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400352022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1401889797
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64999,15 +65018,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 678347451, guid: 580afbf1a57fdbd48b6fa3557165bd6c, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7363337633868672577, guid: 580afbf1a57fdbd48b6fa3557165bd6c,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7363337633868672578, guid: 580afbf1a57fdbd48b6fa3557165bd6c,
         type: 3}
       propertyPath: m_RootOrder
