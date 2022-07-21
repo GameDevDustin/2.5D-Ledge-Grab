@@ -16,21 +16,32 @@ public class ElevatorPanel : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player") && !_elevatorScript.GetMovingUp() && !_elevatorScript.GetMovingDown()) {
             // _panelLightTransform.GetComponent<MeshRenderer>().material = _greenLight;
-            MeshRenderer meshRenderer = _panelLightTransform.GetComponent<MeshRenderer>();
-            meshRenderer.material.EnableKeyword("_EMISSION");
-            meshRenderer.material.SetColor("_EmissionColor", Color.green);
+            // MeshRenderer meshRenderer = _panelLightTransform.GetComponent<MeshRenderer>();
+            // meshRenderer.material.EnableKeyword("_EMISSION");
+            // meshRenderer.material.SetColor("_EmissionColor", Color.green);
+            
+            
+            //Only turn panel light green if the elevator is not on the same level as the elevator panel already
+            if ((_moveElevatorDownOnCall && _elevatorScript.GetCurrentElevatorPosition() == Elevator.ElevatorPosition.top) || 
+                !_moveElevatorDownOnCall && _elevatorScript.GetCurrentElevatorPosition() == Elevator.ElevatorPosition.bottom) {
+                SetPanelLight(Color.green);
+            } 
 
-            if (_moveElevatorDownOnCall) { _elevatorScript.MoveDown();
-            } else { _elevatorScript.MoveUp(); }
+            if (_moveElevatorDownOnCall) { _elevatorScript.MoveDown(); }
+            else { _elevatorScript.MoveUp(); }
         }
+    }
+
+    private void SetPanelLight(Color color) {
+        MeshRenderer meshRenderer = _panelLightTransform.GetComponent<MeshRenderer>();
+        meshRenderer.material.EnableKeyword("_EMISSION");
+        meshRenderer.material.SetColor("_EmissionColor", color);
     }
 
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Player")) {
             // _panelLightTransform.GetComponent<MeshRenderer>().material = _redLight;
-            MeshRenderer meshRenderer = _panelLightTransform.GetComponent<MeshRenderer>();
-            meshRenderer.material.EnableKeyword("_EMISSION");
-            meshRenderer.material.SetColor("_EmissionColor", Color.red);
+            SetPanelLight(Color.red);
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
 public class Elevator : MonoBehaviour {
-    private enum ElevatorPosition { top, bottom }
+    public enum ElevatorPosition { top, bottom }
     [Range(0,10)]
     [SerializeField] private float _elevatorSpeed;
     [SerializeField] private ElevatorPosition _elevatorCurrentPosition;
@@ -15,6 +15,7 @@ public class Elevator : MonoBehaviour {
     [SerializeField] private bool _movingdown;
 
 
+    public ElevatorPosition GetCurrentElevatorPosition() { return _elevatorCurrentPosition; }
     public bool GetMovingUp() { return _movingUp; }
     public bool GetMovingDown() { return _movingdown; }
     

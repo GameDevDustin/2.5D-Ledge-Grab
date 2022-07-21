@@ -3787,7 +3787,7 @@ Transform:
   - {fileID: 1883785067}
   - {fileID: 1477851060}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &163049537
 PrefabInstance:
@@ -5978,7 +5978,7 @@ Transform:
   - {fileID: 1988656115}
   - {fileID: 1029654792}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &283137943
 PrefabInstance:
@@ -25605,7 +25605,7 @@ Transform:
   - {fileID: 1317899285}
   - {fileID: 1401889798}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &949365031
 PrefabInstance:
@@ -30182,7 +30182,7 @@ Transform:
   - {fileID: 993501948}
   - {fileID: 170928940}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1166039764
 PrefabInstance:
@@ -34254,7 +34254,7 @@ PrefabInstance:
     - target: {fileID: 888422363808437659, guid: fcbf9fe5b975bb148a42a11197560f80,
         type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 888422363808437659, guid: fcbf9fe5b975bb148a42a11197560f80,
         type: 3}
@@ -37999,6 +37999,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1316592254}
+  - {fileID: 599090629}
   - {fileID: 155050095}
   - {fileID: 939633302}
   - {fileID: 1735120236}
@@ -38008,8 +38010,6 @@ Transform:
   - {fileID: 1157768165}
   - {fileID: 1751671397}
   - {fileID: 281722076}
-  - {fileID: 599090629}
-  - {fileID: 1316592254}
   m_Father: {fileID: 746957297}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -42410,6 +42410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536741210}
+  - component: {fileID: 1536741211}
   m_Layer: 0
   m_Name: Ceiling_Long (1)
   m_TagString: Untagged
@@ -42448,6 +42449,19 @@ Transform:
   m_Father: {fileID: 1735120236}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1536741211
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536741209}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 17.653269, y: 0.8755169, z: 27.11114}
+  m_Center: {x: -7.6587343, y: 0.062241554, z: -0.3797145}
 --- !u!1001 &1539537010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46355,7 +46369,7 @@ Transform:
   - {fileID: 619273064}
   - {fileID: 1051492262}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1639003685
 PrefabInstance:
@@ -49792,7 +49806,7 @@ Transform:
   - {fileID: 1080651681}
   - {fileID: 18961595}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1735688283
 PrefabInstance:
@@ -50686,7 +50700,7 @@ Transform:
   - {fileID: 1100682138}
   - {fileID: 1882386154}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1765245340
 PrefabInstance:
@@ -53714,7 +53728,7 @@ Transform:
   - {fileID: 1982615138}
   - {fileID: 8433136959790150444}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1856402615
 GameObject:
@@ -56750,7 +56764,7 @@ Transform:
   - {fileID: 139997899}
   - {fileID: 1118517736}
   m_Father: {fileID: 1417673431}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1955962581
 PrefabInstance:
@@ -63057,7 +63071,7 @@ PrefabInstance:
     - target: {fileID: 888422363808437659, guid: fcbf9fe5b975bb148a42a11197560f80,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 888422363808437659, guid: fcbf9fe5b975bb148a42a11197560f80,
         type: 3}
