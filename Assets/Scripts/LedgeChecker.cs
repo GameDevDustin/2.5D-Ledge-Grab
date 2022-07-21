@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class LedgeChecker : MonoBehaviour {
@@ -29,7 +30,12 @@ public class LedgeChecker : MonoBehaviour {
                 if (tran.CompareTag("LedgeSnapTo")) { _ledgeSnapToTransform = tran; }
             }
 
-            if (_ledgeSnapToTransform != null) { _movePlayerTowardsSnapTo = true; }
+            if (_ledgeSnapToTransform != null) {
+                Vector3 ledgeSnapToPosition = new Vector3 (_ledgeSnapToTransform.position.x, _ledgeSnapToTransform.position.y, 0f);
+                
+                _ledgeSnapToTransform.SetPositionAndRotation(ledgeSnapToPosition , quaternion.identity);
+                _movePlayerTowardsSnapTo = true;
+            }
 
             _playerController.DisableMovement();
             DisableCharController();
@@ -44,7 +50,9 @@ public class LedgeChecker : MonoBehaviour {
     }
 
     private void MovePlayerTowardsSnapTo() {
-        if (_playerTransform.position != _ledgeSnapToTransform.position) {
+        if (_playerTransform.position != _ledgeSnapToTransform.position)
+        {
+            // _ledgeSnapToTransform.SetPositionAndRotation(new Vector3(_ledgeSnapToTransform.position.x, _ledgeSnapToTransform.position.y, 0f) , quaternion.identity);
             _playerTransform.position = Vector3.MoveTowards(_playerTransform.position, _ledgeSnapToTransform.position, _snapToMoveSpeed * Time.deltaTime);
         } else { _movePlayerTowardsSnapTo = false; }
     }
