@@ -12,15 +12,15 @@ public class PlayerAnimations : MonoBehaviour {
     [SerializeField] private Animator _animator;
     [SerializeField] private PlayerController _playerController;
 
-    
+
     public void CharFaceRight() {
         _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, 90f, _charModelTransform.rotation.z));
+        _playerCharFacingDirection = PlayerCharFacingDirection.right;
     }
-
     public void CharFaceLeft() {
         _charModelTransform.SetPositionAndRotation(_charModelTransform.position, Quaternion.Euler(_charModelTransform.rotation.x, -90f, _charModelTransform.rotation.z));
+        _playerCharFacingDirection = PlayerCharFacingDirection.left;
     }
-    
     public PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
     public PlayerCharFacingDirection GetPlayerCharFacingDirection() { return _playerCharFacingDirection; }
 
@@ -56,7 +56,20 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerCharAnimState.hangingIdle: _animator.SetBool("isHangingIdle", true); break;
             case PlayerCharAnimState.hangingDropping: _animator.SetBool("isHangingDropping", true); break;
             case PlayerCharAnimState.hangingClimbing: _animator.SetBool("isHangingClimbing", true); break;
+            case PlayerCharAnimState.ladderClimbing: _animator.SetBool("isClimbingLadder", true); break;
+            case PlayerCharAnimState.ladderDropping: _animator.SetBool("isLadderDropping", true); break; 
+            case PlayerCharAnimState.ladderTopClimb: _animator.SetBool("isClimbingToTop", true); break;
         }
+    }
+    
+    private void UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delayUpdateExecution) {
+        StartCoroutine(DelayUpdatePlayerAnimState(playerCharAnimState,delayUpdateExecution));
+    }
+
+    private IEnumerator DelayUpdatePlayerAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delay) {
+        yield return new WaitForSeconds(delay);
+        _playerCharAnimState = playerCharAnimState;
+        UpdatePlayerCharAnimState(_playerCharAnimState);
     }
     
     private void OnEnable() {
@@ -90,6 +103,9 @@ public class PlayerAnimations : MonoBehaviour {
         _animator.SetBool("isHangingIdle", false);
         _animator.SetBool("isHangingDropping", false);
         _animator.SetBool("isHangingClimbing", false);
+        _animator.SetBool("isClimbingLadder", false);
+        _animator.SetBool("isLadderDropping", false);
+        _animator.SetBool("isClimbingToTop", false);
     }
     
     private void DoNullChecks() {

@@ -11,6 +11,7 @@ public class LedgeChecker : MonoBehaviour {
     [SerializeField] private Transform _ledgeSnapToTransform;
     [SerializeField] private bool _movePlayerTowardsSnapTo;
     [SerializeField] private float _snapToMoveSpeed;
+    [SerializeField] private LedgeTrigger _ledgeTrigger;
     
 
     private void Start() {
@@ -24,28 +25,34 @@ public class LedgeChecker : MonoBehaviour {
     private void FixedUpdate() { if (_movePlayerTowardsSnapTo) { MovePlayerTowardsSnapTo(); } }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("LedgeTrigger")) {
-            foreach (Transform tran in other.GetComponentInChildren<Transform>()) {
-                if (tran.CompareTag("LedgeSnapTo")) { _ledgeSnapToTransform = tran; }
-            }
+        if (other.CompareTag("LedgeTrigger") && !_playerController.GetHangingInputEnabled()) {
+            _ledgeTrigger = other.GetComponent<LedgeTrigger>();
+            
+            //if current player facing direction equals ledge trigger facing direction, allow player to hang from ledge
+            if (_playerAnimations.GetPlayerCharFacingDirection() == _ledgeTrigger.GetLedgeCharFacingDirection()) {
+                foreach (Transform tran in other.GetComponentInChildren<Transform>()) {
+                    if (tran.CompareTag("LedgeSnapTo")) { _ledgeSnapToTransform = tran; }
+                }
 
-            if (_ledgeSnapToTransform != null) {
-                Vector3 ledgeSnapToPosition = new Vector3 (_ledgeSnapToTransform.position.x, _ledgeSnapToTransform.position.y, 0f);
+                if (_ledgeSnapToTransform != null) {
+                    Vector3 ledgeSnapToPosition = new Vector3 (_ledgeSnapToTransform.position.x, _ledgeSnapToTransform.position.y, 0f);
                 
-                _ledgeSnapToTransform.SetPositionAndRotation(ledgeSnapToPosition , quaternion.identity);
-                _movePlayerTowardsSnapTo = true;
-            }
+                    _ledgeSnapToTransform.SetPositionAndRotation(ledgeSnapToPosition , quaternion.identity);
+                    _movePlayerTowardsSnapTo = true;
+                }
 
-            _playerController.DisableMovement();
-            DisableCharController();
-            _playerController.SetPlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumpToHanging);
-            StartCoroutine(HangDelay());
+                _playerController.DisableMovement();
+                DisableCharController();
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumpToHanging);
+                StartCoroutine(HangDelay());
+            }
         }
     }
 
     private IEnumerator HangDelay() {
         yield return new WaitForSeconds(0.5f);
         _playerController.SetHangingInput(true);
+        Debug.Log("SetHangingInput(True)");
     }
 
     private void MovePlayerTowardsSnapTo() {
