@@ -12,6 +12,7 @@ TagManager:
   - LedgeTrigger
   - LedgeSnapTo
   - LedgeChecker
+  - Ladder
   layers:
   - Default
   - TransparentFX

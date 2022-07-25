@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
+    private enum MovePlayerDirectionOnLadder {up, down}
+    
     private CharacterController _controller;
     private InputActions _inputActions;
     [SerializeField] private Vector3 _playerVelocity;
@@ -27,15 +29,19 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private LedgeChecker _ledgeChecker;
     private float _timeSinceWalkStarted;
     private PlayerAnimations.PlayerCharAnimState _animStatePriorToFirstJump;
-    // [SerializeField] private PlayerAnimations.PlayerCharAnimState _playerCharAnimState;
     private Vector3 _wallCollisionNormal;
-    
 
-    // public PlayerAnimations.PlayerCharAnimState GetPlayerCharAnimState() { return _playerCharAnimState; }
-    // public void SetPlayerCharAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState) {
-    //     _playerCharAnimState = playerCharAnimState; 
-    //     _playerAnimations.UpdatePlayerCharAnimState(playerCharAnimState);
-    // }
+    [SerializeField] private bool _playerIsClimbing;
+    [SerializeField] private float _snapToMoveSpeed;
+    [SerializeField] private float _movePlayerOnLadderSpeed;
+    [SerializeField] private bool _movePlayerTowardsLadderSnapTo;
+    [SerializeField] private bool _movePlayerOnLadder;
+    [SerializeField] private MovePlayerDirectionOnLadder _movePlayerDirectionOnLadder;
+    [SerializeField] private Vector3 _ladderSnapToPosition;
+    [SerializeField] private Vector3 _ladderReachedEndPosition;
+    [SerializeField] private Ladder.LadderAngle _ladderAngle;
+
+
     public bool GetMovementDisabled() { return _movementDisabled; }
     public void EnableMovement() { _movementDisabled = false;}
     public void DisableMovement() { _movementDisabled = true; }
@@ -53,7 +59,9 @@ public class PlayerController : MonoBehaviour {
         _movementDisabled = false;
         _canWallJump = false;
         _isWallJumping = false;
-        // _playerCharAnimState = PlayerAnimations.PlayerCharAnimState.idle;
+        _movePlayerTowardsLadderSnapTo = false;
+        _movePlayerOnLadder = false;
+        _playerIsClimbing = false;
     }
 
     private void OnDisable() {
@@ -89,7 +97,6 @@ public class PlayerController : MonoBehaviour {
             _controller.enabled = true;
             _playerVelocity = Vector3.zero;
             _movementDisabled = false;
-            // UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.hangingDropping);
             UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.idle, 2f);
             _hangingInputEnabled = false;
         }
@@ -100,21 +107,19 @@ public class PlayerController : MonoBehaviour {
             float climbDelay = 3.51f;
 
             UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.hangingClimbing);
-            StartCoroutine(ClimbDelaySetPlayerGOPosition(climbDelay));
+            StartCoroutine(ClimbDelaySetPlayerGOPosition(climbDelay, true, false));
         }
     }
 
-    public IEnumerator ClimbDelaySetPlayerGOPosition(float climbDelay) {
+    public IEnumerator ClimbDelaySetPlayerGOPosition(float climbDelay, bool hangClimbing, bool ladderClimbing) {
         Vector3 finalPlayerGOPosition;
-        Debug.Log("fire1");
+        // transform.position = _playerAnimations.GetAnimator().bodyPosition;
         yield return new WaitForSeconds(climbDelay);
-        Debug.Log("fire2");
         finalPlayerGOPosition = _playerAnimations.GetAnimator().bodyPosition;
-        finalPlayerGOPosition.y += 0.39254f;
+        if (hangClimbing) { finalPlayerGOPosition.y += 0.39254f; }
         transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity);
         UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState.idle);
         _hangingInputEnabled = false;
-        // transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity);
         _playerVelocity = Vector3.zero;
         _controller.enabled = true;
         _movementDisabled = false;
@@ -129,9 +134,11 @@ public class PlayerController : MonoBehaviour {
         }
         DoNullChecks();
     }
-    
-    void FixedUpdate() { DeterminePlayerVelocity(); 
-        // UpdatePlayerAnimationState(_playerCharAnimState); 
+
+    void FixedUpdate() {
+        DeterminePlayerVelocity();
+        if (_movePlayerOnLadder) { MovePlayerOnLadder(); }
+        if (_movePlayerTowardsLadderSnapTo) { MovePlayerTowardsLadderSnapTo(); }
     }
 
     private void DeterminePlayerVelocity() {
@@ -216,16 +223,121 @@ public class PlayerController : MonoBehaviour {
     }
     
     private void MovePlayer(Vector3 moveVelocity) { _controller.Move(moveVelocity * Time.deltaTime); }
+
+    private void MovePlayerTowardsLadderSnapTo()
+    {
+        if (transform.position != _ladderSnapToPosition) {
+            transform.position = Vector3.MoveTowards(transform.position, _ladderSnapToPosition, _snapToMoveSpeed * Time.deltaTime);
+        } else { _movePlayerTowardsLadderSnapTo = false; }
+    }
     
-    private void OnTriggerEnter(Collider other) {
-        if (other.tag.ToLower().StartsWith("moving")) {
-            if (other.tag.ToLower() == "movingelevator") { transform.parent = other.transform.GetChild(0);
-            } else { transform.parent = other.transform; }
+    private void MovePlayerOnLadder() {
+        if (transform.position != _ladderReachedEndPosition) { //Player has not reached the end of climbing on the ladder
+            transform.position = Vector3.MoveTowards(transform.position, _ladderReachedEndPosition, _movePlayerOnLadderSpeed * Time.deltaTime);
+        } else { //Player has reached the end of climbing on the ladder
+            _movePlayerOnLadder = false;
+
+            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.up) { //Player is climbing up a ladder
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
+                ClimbDelaySetPlayerGOPosition(3.5f, false, true);
+                _controller.enabled = true;
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 2f);
+            } else { //Player is climbing down a ladder
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.75f);
+                _controller.enabled = true;
+                if (_ladderAngle == Ladder.LadderAngle.topLeftToBottomRight) { //move player to the right of ladder
+                    _playerAnimations.CharFaceRight();
+                    MovePlayer(new Vector3(2,0,0));
+                } else { //move player to the left of ladder
+                    _playerAnimations.CharFaceLeft();
+                    MovePlayer(new Vector3(-2,0,0));
+                }
+            }
+
+            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.down) {
+                _movementDisabled = false;
+            } else { StartCoroutine(DelayEnableMovement(4f)); }
         }
     }
 
+    private void OnAnimatorIK(int layerIndex) {
+        transform.position = _playerAnimations.GetAnimator().bodyPosition;
+    }
+
+    private IEnumerator DelayEnableMovement(float delay) {
+        yield return new WaitForSeconds(delay);
+        transform.position = _playerAnimations.GetAnimator().bodyPosition;
+        _movementDisabled = false;
+    }
+    
+    private void OnTriggerEnter(Collider other) {
+        if (other.tag.ToLower().StartsWith("moving")) { //Collided with a moving platform or elevator
+            if (other.tag.ToLower() == "movingelevator") { transform.parent = other.transform.GetChild(0);
+            } else { transform.parent = other.transform; }
+        } else if (other.CompareTag("Ladder") && !_playerIsClimbing) { ClimbLadder(other); } //Collided with a ladder
+    }
+
+    private void ClimbLadder(Collider other) {
+        Ladder ladder = other.GetComponent<Ladder>();
+        Transform snapToBottomPosition = ladder.GetSnapToBottomPosition();
+        Transform snapToTopPosition = ladder.GetSnapToTopPosition();
+        Transform reachedBottomPosition = ladder.GetReachedBottomPosition();
+        Transform reachedTopPosition = ladder.GetReachedTopPosition();
+        Ladder.LadderSnapToLocations ladderSnapToLocation;
+
+        _ladderAngle = ladder.GetLadderAngle();
+        _playerIsClimbing = true;
+        
+        //Determine if at top or bottom
+        if ((transform.position.y - _controller.height) < other.transform.position.y) { //player char at bottom
+            ladderSnapToLocation = Ladder.LadderSnapToLocations.bottom;
+        } else if (transform.position.y > other.transform.position.y) { //player char at top
+            ladderSnapToLocation = Ladder.LadderSnapToLocations.top;
+        } else {
+            ladderSnapToLocation = Ladder.LadderSnapToLocations.bottom;
+            Debug.LogError("PlayerController:OnTriggerEnter() Player position relative to ladder unknown! Assumed to be bottom of ladder.");
+        }
+
+        //Make player character face ladder correctly
+        if (_ladderAngle == Ladder.LadderAngle.topLeftToBottomRight) { _playerAnimations.CharFaceLeft(); } //ladder goes from top left to bottom right
+        else if (_ladderAngle == Ladder.LadderAngle.topRightToBottomLeft) { _playerAnimations.CharFaceRight(); } //ladder goes from top right to bottom left
+
+        //Determine ladder snap to position & reached end position
+        if (ladderSnapToLocation == Ladder.LadderSnapToLocations.bottom) { //Snap to bottom of ladder
+            _ladderSnapToPosition = snapToBottomPosition.position;
+            _ladderReachedEndPosition = reachedTopPosition.position;
+            _movePlayerDirectionOnLadder = MovePlayerDirectionOnLadder.up;
+        } else if (ladderSnapToLocation == Ladder.LadderSnapToLocations.top) { //Snap to top of ladder
+            _ladderSnapToPosition = snapToTopPosition.position;
+            _ladderReachedEndPosition = reachedBottomPosition.position;
+            _movePlayerDirectionOnLadder = MovePlayerDirectionOnLadder.down;
+        }
+
+        DisableMovement();
+        _controller.enabled = false;
+        
+        if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.up) { //Climb up the ladder
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderClimbingUp);
+        } else { //Climb down ladder
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderClimbingDown);
+        }
+        
+        _movePlayerTowardsLadderSnapTo = true;
+        StartCoroutine(ResetPlayerSnapTo());
+    }
+
+    private IEnumerator ResetPlayerSnapTo() {
+        yield return new WaitForSeconds(0.5f);
+        _movePlayerTowardsLadderSnapTo = false;
+        _movePlayerOnLadder = true;
+    }
+    
     private void OnTriggerExit(Collider other) {
-        if (other.tag.ToLower().StartsWith("moving")) { transform.parent = null; }
+        if (other.tag.ToLower().StartsWith("moving")) { transform.parent = null; } //Moving platform or elevator
+        else if (other.CompareTag("Ladder")) {
+            _playerIsClimbing = false; //Reset playerIsClimbing flag
+        }
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {
@@ -251,9 +363,7 @@ public class PlayerController : MonoBehaviour {
         _isWallJumping = false;
     }
 
-    private void UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState playerCharAnimState)
-    {
-        // _playerCharAnimState = playerCharAnimState;
+    private void UpdatePlayerAnimationState(PlayerAnimations.PlayerCharAnimState playerCharAnimState) {
         _playerAnimations.UpdatePlayerCharAnimState(playerCharAnimState);
     }
 
@@ -263,7 +373,6 @@ public class PlayerController : MonoBehaviour {
 
     private IEnumerator DelayUpdatePlayerAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delay) {
         yield return new WaitForSeconds(delay);
-        // _playerCharAnimState = playerCharAnimState;
         _playerAnimations.UpdatePlayerCharAnimState(playerCharAnimState);
     }
     

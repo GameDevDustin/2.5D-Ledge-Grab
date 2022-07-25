@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour {
-    public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing, ladderClimbing, ladderDropping, ladderTopClimb }
+    public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing, ladderClimbingUp, ladderClimbingDown, ladderDropping, ladderTopClimb }
     public enum PlayerCharFacingDirection { left, right }
 
     [SerializeField] private PlayerCharFacingDirection _playerCharFacingDirection;
@@ -40,6 +40,14 @@ public class PlayerAnimations : MonoBehaviour {
     public Animator GetAnimator() { return _animator; }
     
     public void UpdatePlayerCharAnimState(PlayerCharAnimState playerCharAnimState) {
+        UpdateCharAnimState(playerCharAnimState);
+    }
+    
+    public void UpdatePlayerCharAnimState(PlayerCharAnimState playerCharAnimState, float delayUpdateExecution) {
+        StartCoroutine(DelayUpdatePlayerAnimState(playerCharAnimState,delayUpdateExecution));
+    }
+
+    private void UpdateCharAnimState(PlayerCharAnimState playerCharAnimState) {
         ResetAnimatorParameters();
         
         //Update _playerCharAnimState
@@ -56,20 +64,16 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerCharAnimState.hangingIdle: _animator.SetBool("isHangingIdle", true); break;
             case PlayerCharAnimState.hangingDropping: _animator.SetBool("isHangingDropping", true); break;
             case PlayerCharAnimState.hangingClimbing: _animator.SetBool("isHangingClimbing", true); break;
-            case PlayerCharAnimState.ladderClimbing: _animator.SetBool("isClimbingLadder", true); break;
+            case PlayerCharAnimState.ladderClimbingUp: _animator.SetBool("isClimbingUpLadder", true); break;
+            case PlayerCharAnimState.ladderClimbingDown: _animator.SetBool("isClimbingDownLadder", true); break;
             case PlayerCharAnimState.ladderDropping: _animator.SetBool("isLadderDropping", true); break; 
             case PlayerCharAnimState.ladderTopClimb: _animator.SetBool("isClimbingToTop", true); break;
         }
     }
-    
-    private void UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delayUpdateExecution) {
-        StartCoroutine(DelayUpdatePlayerAnimState(playerCharAnimState,delayUpdateExecution));
-    }
 
-    private IEnumerator DelayUpdatePlayerAnimState(PlayerAnimations.PlayerCharAnimState playerCharAnimState, float delay) {
+    private IEnumerator DelayUpdatePlayerAnimState(PlayerCharAnimState playerCharAnimState, float delay) {
         yield return new WaitForSeconds(delay);
-        _playerCharAnimState = playerCharAnimState;
-        UpdatePlayerCharAnimState(_playerCharAnimState);
+        UpdateCharAnimState(playerCharAnimState);
     }
     
     private void OnEnable() {
@@ -103,7 +107,8 @@ public class PlayerAnimations : MonoBehaviour {
         _animator.SetBool("isHangingIdle", false);
         _animator.SetBool("isHangingDropping", false);
         _animator.SetBool("isHangingClimbing", false);
-        _animator.SetBool("isClimbingLadder", false);
+        _animator.SetBool("isClimbingUpLadder", false);
+        _animator.SetBool("isClimbingDownLadder", false);
         _animator.SetBool("isLadderDropping", false);
         _animator.SetBool("isClimbingToTop", false);
     }
