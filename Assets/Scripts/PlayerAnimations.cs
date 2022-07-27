@@ -10,7 +10,6 @@ public class PlayerAnimations : MonoBehaviour {
     [SerializeField] private PlayerCharAnimState _playerCharAnimState;
     [SerializeField] private Transform _charModelTransform;
     [SerializeField] private Animator _animator;
-    [SerializeField] private PlayerController _playerController;
 
 
     public void CharFaceRight() {
@@ -91,10 +90,7 @@ public class PlayerAnimations : MonoBehaviour {
         _animator.SetBool("isIdle", true);
     }
     
-    private void Start() {
-        if (_playerController == null) { _playerController = transform.GetComponent<PlayerController>(); }
-        DoNullChecks();
-    }
+    private void Start() { DoNullChecks(); }
 
     private void ResetAnimatorParameters() {
         //Reset all Animator parameters to false
@@ -116,7 +112,6 @@ public class PlayerAnimations : MonoBehaviour {
     private void DoNullChecks() {
         if (_charModelTransform == null) { Debug.LogError("PlayerAnimations::DoNullChecks() _charModelTransform is NULL!"); }
         if (_animator == null) { Debug.LogError("PlayerAnimations::DoNullChecks() _animator is NULL!"); }
-        if (_playerController == null) { Debug.LogError("PlayerAnimations::DoNullChecks() _playerController is NULL!"); }
     }
 }
 

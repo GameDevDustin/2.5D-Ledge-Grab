@@ -11,10 +11,6 @@ public class Ladder : MonoBehaviour {
     [SerializeField] private Transform _snapToTopPosition;
     [SerializeField] private Transform _reachedBottomPosition;
     [SerializeField] private Transform _reachedTopPosition;
-    [Space] [Space] [SerializeField] private Transform _playerTransform;
-    [SerializeField] private PlayerController _playerController;
-    [SerializeField] private CharacterController _characterController;
-    [Space] [SerializeField] private bool _otherIsPlayer;
 
 
     public LadderAngle GetLadderAngle() { return _ladderAngle; }
@@ -34,7 +30,6 @@ public class Ladder : MonoBehaviour {
                 }
             }
         }
-        _otherIsPlayer = false;
         DoNullChecks();
     }
 

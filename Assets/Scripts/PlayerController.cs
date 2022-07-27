@@ -7,32 +7,55 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour {
     private enum MovePlayerDirectionOnLadder {up, down}
     
-    [Header("Player State")]
+    [Header("Player Character State")]
+    [Tooltip("Determines whether player input for character movement is enabled.")]
     [SerializeField] private bool _movementDisabled;
-    [Space] [SerializeField] private Vector3 _playerVelocity;
-    [Space] [SerializeField] private bool _isGrounded;
-    [Space] [SerializeField] private bool _isClimbingLadder;
-    [SerializeField] private bool _movePlayerTowardsLadderSnapTo;
-    [Space] [SerializeField] private bool _isClimbingLedge;
+    [Space] [Tooltip("Player character's current velocity.")]
+    [SerializeField] private Vector3 _playerVelocity;
+    [Space] [Tooltip("Linked to Character Controller component; determines if character is considered to be on ground.")]
+    [SerializeField] private bool _isGrounded;
+    [Space] [Tooltip("Character is climbing.")] 
+    [SerializeField] private bool _isClimbingLadder;
+    [Tooltip("Character is being snapped to a ladder.")]
+    [SerializeField] private bool _moveTowardsLadderSnapTo;
+    [Space] [Tooltip("Character is climbing a ledge.")]
+    [SerializeField] private bool _isClimbingLedge;
+    [Tooltip("Character is hanging from a ledge.")]
     [SerializeField] private bool _isHangingFromLedge;
-    [Space] [SerializeField] private bool _isWallJumping;
+    [Space] [Tooltip("Character is wall jumping.")] 
+    [SerializeField] private bool _isWallJumping;
+    [Tooltip("Character has jumped and made contact with a jumpable wall, thus can jump off of wall.")]
     [SerializeField] private bool _canWallJump;
+    [Tooltip("Jump Action is also used for dropping from ledges. This differentiates between dropping and also represents the first jump when grounded.")]
     [SerializeField] private bool _startJump;
     [Space][Header("Default Values")]
+    [Tooltip("Character's default run speed in relation to physics, not animation.")]
     [SerializeField] private float _playerRunSpeed;
+    [Tooltip("Character's default walk speed in relation to physics, not animation.")]
     [SerializeField] private float _playerWalkSpeed;
+    [Tooltip("Character's default jump height for physics interactions.")]
     [SerializeField] private float _jumpHeight;
+    [Tooltip("Default gravity value for physics interactions.")]
     [SerializeField] private float _gravityValue;
+    [Tooltip("Default move speed in relation to physics when snapping character to objects.")]
     [SerializeField] private float _snapToMoveSpeed;
+    [Tooltip("Default move speed in relation to physics when moving character up/down a ladder.")]
     [SerializeField] private float _movePlayerOnLadderSpeed;
     [Space][Header("Current Values")]
+    [Tooltip("Tracks number of jumps since character was grounded to cap jumping to only two jumps.")]
     [SerializeField] private int _currNumOfJumps;
+    [Tooltip("Determines what direction a character is moving on a ladder.")]
     [SerializeField] private MovePlayerDirectionOnLadder _movePlayerDirectionOnLadder;
+    [Tooltip("To determine which direction the character should be facing, current ladder angle must be known.")]
     [SerializeField] private Ladder.LadderAngle _currentLadderAngle;
+    [Tooltip("The current position on the ladder the character will snap to before climbing.")]
     [SerializeField] private Vector3 _ladderSnapToPosition;
+    [Tooltip("The position on the ladder when the character should transition to an exit sequence.")]
     [SerializeField] private Vector3 _ladderReachedEndPosition;
     [Space][Header("References")]
+    [Tooltip("The PlayerAnimations class handles character animations. Reference needed for physics interactions.")]
     [SerializeField] private PlayerAnimations _playerAnimations;
+    [Tooltip("The child game object positioned above the character model whose collisions with ledge triggers initiates ledge hanging mechanic.")]
     [SerializeField] private LedgeChecker _ledgeChecker;
     private CharacterController _controller;
     private InputActions _inputActions;
@@ -43,8 +66,12 @@ public class PlayerController : MonoBehaviour {
     
     //Public Methods
     public bool GetMovementDisabled() { return _movementDisabled; }
-    public void EnableMovement() { _movementDisabled = false;}
-    public void DisableMovement() { _movementDisabled = true; }
+    public void EnableMovement() { _movementDisabled = false; _controller.enabled = true; }
+    public void EnableMovement(float delay) { StartCoroutine(DelayEnableMovement(delay)); }
+    private IEnumerator DelayEnableMovement(float delay) { yield return new WaitForSeconds(delay); _movementDisabled = false; _controller.enabled = true; }
+    public void DisableMovement() { _movementDisabled = true; _controller.enabled = false; }
+    public void DisableMovement(float delay) { StartCoroutine(DelayDisableMovement(delay)); }
+    private IEnumerator DelayDisableMovement(float delay) { yield return new WaitForSeconds(delay); _movementDisabled = true; _controller.enabled = false; }
     public bool GetHangingInputEnabled() { return _isHangingFromLedge; }
     public void SetHangingInput(bool hangingInputEnabled) { _isHangingFromLedge = hangingInputEnabled; }
 
@@ -56,7 +83,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Jump.canceled += JumpOnCancelled;
         _inputActions.Player.Use.performed += UseOnPeformed;
         _currNumOfJumps = 0;
-        _movementDisabled = _canWallJump = _isWallJumping = _movePlayerTowardsLadderSnapTo = _isClimbingLadder = _isClimbingLedge = false;
+        _movementDisabled = _canWallJump = _isWallJumping = _moveTowardsLadderSnapTo = _isClimbingLadder = _isClimbingLedge = false;
     }
 
     private void Start() {
@@ -95,10 +122,9 @@ public class PlayerController : MonoBehaviour {
  
         if (_isHangingFromLedge) {
             _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.hangingDropping);
-            _controller.enabled = true;
+            EnableMovement();
             _playerVelocity = Vector3.zero;
-            _movementDisabled = false;
-            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 2f);
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, .25f);
             _isHangingFromLedge = false;
         }
     }
@@ -115,24 +141,22 @@ public class PlayerController : MonoBehaviour {
     private IEnumerator ClimbDelaySetPlayerGOPosition(float climbDelay, bool hangClimbing, bool ladderClimbing) {
         Vector3 finalPlayerGOPosition;
         
-        yield return new WaitForSeconds(climbDelay);
+        yield return new WaitForSeconds(climbDelay - 0.4f); //Must trigger before animation completes or player animation screws up
         finalPlayerGOPosition = _playerAnimations.GetAnimator().bodyPosition;
-        if (hangClimbing) { finalPlayerGOPosition.y += 0.39254f; }
         transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity);
         _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle);
-        _isHangingFromLedge = false;
         _playerVelocity = Vector3.zero;
-        _controller.enabled = true;
-        _movementDisabled = false;
+        _isHangingFromLedge = false;
+        EnableMovement();
     }
     
     //Physics
     private void FixedUpdate() {
         DeterminePlayerVelocity();
         if (_isClimbingLadder) { MovePlayerOnLadder(); }
-        if (_movePlayerTowardsLadderSnapTo) { MovePlayerTowardsLadderSnapTo(); }
+        if (_moveTowardsLadderSnapTo) { MovePlayerTowardsLadderSnapTo(); }
     }
-    
+
     private void OnAnimatorIK(int layerIndex) { transform.position = _playerAnimations.GetAnimator().bodyPosition; }
     
     private void OnTriggerEnter(Collider other) {
@@ -225,11 +249,14 @@ public class PlayerController : MonoBehaviour {
         if (_isGrounded && _playerVelocity.y < -2) { _playerVelocity.y = 0; } //_playerVelocity.y should never be < -2
 
         if (_isWallJumping && !_canWallJump) { //wall jump
+            //cycle between jump and double jump animation for wall jumping
             if (_playerAnimations.GetPlayerCharAnimState() == PlayerAnimations.PlayerCharAnimState.jumping) {
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.doubleJumping);
             } else { _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumping); }
             
-            _playerVelocity.y = Mathf.Sqrt(_jumpHeight * -1.25f * _gravityValue); 
+            //Apply velocities appropriate for wall jumping
+            _playerVelocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravityValue);
+            _playerVelocity.x *= 1.5f;
         } else if (_startJump && _isGrounded) { //first jump
             _animStatePriorToFirstJump = _playerAnimations.GetPlayerCharAnimState(); //track prior anim state for exitting jump
             _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumping);
@@ -247,11 +274,18 @@ public class PlayerController : MonoBehaviour {
     
     private void MovePlayer(Vector3 moveVelocity) { _controller.Move(moveVelocity * Time.deltaTime); }
 
+    private void MovePlayer(Vector3 moveVelocity, float delay) { StartCoroutine(DelayMovePlayer(moveVelocity, delay)); }
+
+    private IEnumerator DelayMovePlayer(Vector3 moveVelocity, float delay) {
+        yield return new WaitForSeconds(delay);
+        _controller.Move(moveVelocity * Time.deltaTime);
+    }
+
     private void MovePlayerTowardsLadderSnapTo()
     {
         if (transform.position != _ladderSnapToPosition) {
             transform.position = Vector3.MoveTowards(transform.position, _ladderSnapToPosition, _snapToMoveSpeed * Time.deltaTime);
-        } else { _movePlayerTowardsLadderSnapTo = false; }
+        } else { _moveTowardsLadderSnapTo = false; }
     }
     
     private void ClimbLadder(Collider other) {
@@ -264,16 +298,16 @@ public class PlayerController : MonoBehaviour {
 
         _currentLadderAngle = ladder.GetLadderAngle();
         _isClimbingLedge = true;
-        
+
         //Determine if at top or bottom
         if ((transform.position.y - _controller.height) < other.transform.position.y) { //player char at bottom
             ladderSnapToLocation = Ladder.LadderSnapToLocations.bottom;
-        } else if (transform.position.y > other.transform.position.y) { //player char at top
+        } else if (transform.position.y > reachedTopPosition.position.y) { //player char at top
             ladderSnapToLocation = Ladder.LadderSnapToLocations.top;
-        } else {
+        } else if (transform.position.y > reachedBottomPosition.position.y) { //player char in between reached positions
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping); //Slide char down ladder
             ladderSnapToLocation = Ladder.LadderSnapToLocations.bottom;
-            Debug.LogError("PlayerController:OnTriggerEnter() Player position relative to ladder unknown! Assumed to be bottom of ladder.");
-        }
+        } else { ladderSnapToLocation = Ladder.LadderSnapToLocations.bottom; } //Must have else statement to avoid compile error
 
         //Make player character face ladder correctly
         if (_currentLadderAngle == Ladder.LadderAngle.topLeftToBottomRight) { _playerAnimations.CharFaceLeft(); } //ladder goes from top left to bottom right
@@ -291,19 +325,18 @@ public class PlayerController : MonoBehaviour {
         }
 
         DisableMovement();
-        _controller.enabled = false;
-        
+
         if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.up) { //Climb up the ladder
             _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderClimbingUp);
         } else { _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderClimbingDown); } //Climb down ladder
         
-        _movePlayerTowardsLadderSnapTo = true;
+        _moveTowardsLadderSnapTo = true;
         StartCoroutine(ResetPlayerSnapTo());
     }
 
     private IEnumerator ResetPlayerSnapTo() {
         yield return new WaitForSeconds(0.5f);
-        _movePlayerTowardsLadderSnapTo = false;
+        _moveTowardsLadderSnapTo = false;
         _isClimbingLadder = true;
     }
     
@@ -313,34 +346,20 @@ public class PlayerController : MonoBehaviour {
         } else { //Player has reached the end of climbing on the ladder
             _isClimbingLadder = false;
 
-            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.up) { //Player is climbing up a ladder
+            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.up) { //Player is climbing up the ledge at top of ladder
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
-                ClimbDelaySetPlayerGOPosition(3.5f, false, true);
-                _controller.enabled = true;
-                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 2f);
-            } else { //Player is climbing down a ladder
+                StartCoroutine(ClimbDelaySetPlayerGOPosition(3f, false, true)); //Delay should be ~ animation duration
+            } else { //Player is dropping down from a ladder
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
-                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.75f);
-                _controller.enabled = true;
-                if (_currentLadderAngle == Ladder.LadderAngle.topLeftToBottomRight) { //move player to the right of ladder
-                    _playerAnimations.CharFaceRight();
-                    MovePlayer(new Vector3(2,0,0));
-                } else { //move player to the left of ladder
-                    _playerAnimations.CharFaceLeft();
-                    MovePlayer(new Vector3(-2,0,0));
-                }
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.25f);
             }
 
-            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.down) {
-                _movementDisabled = false;
-            } else { StartCoroutine(DelayEnableMovement(4f)); }
+            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.down) { //Execute after idle anim plays from above
+                EnableMovement(0.27f); 
+                if (_currentLadderAngle == Ladder.LadderAngle.topLeftToBottomRight) { _playerAnimations.CharFaceRight(); //face char away from ladder
+                } else { _playerAnimations.CharFaceLeft(); } //face char away from ladder
+            }
         }
-    }
-
-    private IEnumerator DelayEnableMovement(float delay) {
-        yield return new WaitForSeconds(delay);
-        transform.position = _playerAnimations.GetAnimator().bodyPosition;
-        _movementDisabled = false;
     }
     
     private void DoNullChecks() {

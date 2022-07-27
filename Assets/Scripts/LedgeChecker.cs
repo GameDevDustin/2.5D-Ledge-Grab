@@ -52,7 +52,6 @@ public class LedgeChecker : MonoBehaviour {
     private IEnumerator HangDelay() {
         yield return new WaitForSeconds(0.5f);
         _playerController.SetHangingInput(true);
-        Debug.Log("SetHangingInput(True)");
     }
 
     private void MovePlayerTowardsSnapTo() {
