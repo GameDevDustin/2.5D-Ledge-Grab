@@ -140,13 +140,15 @@ public class PlayerController : MonoBehaviour {
 
     private IEnumerator ClimbDelaySetPlayerGOPosition(float climbDelay, bool hangClimbing, bool ladderClimbing) {
         Vector3 finalPlayerGOPosition;
-        
+
+        _isClimbingLedge = true; //Set flag true to avoid trigger normal ladder climbing
         yield return new WaitForSeconds(climbDelay - 0.4f); //Must trigger before animation completes or player animation screws up
-        finalPlayerGOPosition = _playerAnimations.GetAnimator().bodyPosition;
-        transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity);
+        finalPlayerGOPosition = _playerAnimations.GetAnimator().bodyPosition; //Get animator position of character animation
+        transform.SetPositionAndRotation(finalPlayerGOPosition, quaternion.identity); //Set player game object position to match character animation position
         _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle);
         _playerVelocity = Vector3.zero;
         _isHangingFromLedge = false;
+        _isClimbingLedge = false; //Set flag false so that player can now enter ladder climb again
         EnableMovement();
     }
     
@@ -168,7 +170,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (other.tag.ToLower().StartsWith("moving")) { transform.parent = null; } //Moving platform or elevator
-        else if (other.CompareTag("Ladder")) { _isClimbingLedge = false; }  //Reset playerIsClimbing flag
+        else if (other.CompareTag("Ladder")) { _isClimbingLedge = false; }  //Reset playerIsClimbing flag after dropping down from ladder
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit) {
@@ -297,7 +299,6 @@ public class PlayerController : MonoBehaviour {
         Ladder.LadderSnapToLocations ladderSnapToLocation;
 
         _currentLadderAngle = ladder.GetLadderAngle();
-        _isClimbingLedge = true;
 
         //Determine if at top or bottom
         if ((transform.position.y - _controller.height) < other.transform.position.y) { //player char at bottom
@@ -350,6 +351,7 @@ public class PlayerController : MonoBehaviour {
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
                 StartCoroutine(ClimbDelaySetPlayerGOPosition(3f, false, true)); //Delay should be ~ animation duration
             } else { //Player is dropping down from a ladder
+                _isClimbingLedge = true;
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.25f);
             }

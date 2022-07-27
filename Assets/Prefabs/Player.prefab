@@ -70,19 +70,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b19a64db97449428f671225299bd47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCharAnimState: 0
+  _movementDisabled: 0
   _playerVelocity: {x: 0, y: 0, z: 0}
   _isGrounded: 0
-  _hangingInputEnabled: 0
+  _isClimbingLadder: 0
+  _moveTowardsLadderSnapTo: 0
+  _isClimbingLedge: 0
+  _isHangingFromLedge: 0
+  _isWallJumping: 0
+  _canWallJump: 0
+  _startJump: 0
   _playerRunSpeed: 11
   _playerWalkSpeed: 5
   _jumpHeight: 3
-  _startJump: 0
-  _currNumOfJumps: 0
-  _canWallJump: 0
-  _isWallJumping: 0
   _gravityValue: -100
-  _movementDisabled: 0
+  _snapToMoveSpeed: 10
+  _movePlayerOnLadderSpeed: 1
+  _currNumOfJumps: 0
+  _movePlayerDirectionOnLadder: 0
+  _currentLadderAngle: 0
+  _ladderSnapToPosition: {x: 0, y: 0, z: 0}
+  _ladderReachedEndPosition: {x: 0, y: 0, z: 0}
   _playerAnimations: {fileID: 0}
   _ledgeChecker: {fileID: 0}
 --- !u!143 &4492835528376960181
@@ -100,9 +108,9 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.03, z: 0}
 --- !u!114 &-7544489575981510737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,7 +127,6 @@ MonoBehaviour:
   _playerCharAnimState: 0
   _charModelTransform: {fileID: 0}
   _animator: {fileID: 0}
-  _playerController: {fileID: 0}
 --- !u!54 &541760164
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -156,12 +163,12 @@ PrefabInstance:
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.099
+      value: 0.09899998
       objectReference: {fileID: 0}
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.05
+      value: 1.201
       objectReference: {fileID: 0}
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
@@ -176,17 +183,17 @@ PrefabInstance:
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5974191313247339635, guid: 0c248dfaff56944418ba7635ca0a8658,
         type: 3}
@@ -231,7 +238,7 @@ PrefabInstance:
     - target: {fileID: 1661244449829362761, guid: 8b32fb01ac4e0ea4696337a686fc70a5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.93
+      value: -0.948
       objectReference: {fileID: 0}
     - target: {fileID: 1661244449829362761, guid: 8b32fb01ac4e0ea4696337a686fc70a5,
         type: 3}
