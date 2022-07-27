@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour {
@@ -27,7 +25,7 @@ public class PlayerInventory : MonoBehaviour {
         _playerAnimations = transform.GetComponent<PlayerAnimations>();
         DoNullChecks();
         _uiManager.UpdateLivesCount(_numOfLives);
-        _uiManager.UpdateCoinCount(_numOfCoins);
+        // _uiManager.UpdateCoinCount(_numOfCoins);
         
         if (transform.position != _levelManager.GetPlayerStartPosition() //check if Player GO at start position
             || transform.eulerAngles != _levelManager.GetPlayerStartRotation() //check if PlayerGO at start rotation
@@ -42,7 +40,7 @@ public class PlayerInventory : MonoBehaviour {
             Coin coinScript = other.GetComponent<Coin>();
         
             _numOfCoins += coinScript.GetNumOfCoins();
-            _uiManager.UpdateCoinCount(_numOfCoins);
+            // _uiManager.UpdateCoinCount(_numOfCoins);
             coinScript.HideCollectable();
         }
     }
@@ -84,3 +82,4 @@ public class PlayerInventory : MonoBehaviour {
         if (_numOfLives == 0) { _numOfLives = _defaultNumOfLives; Debug.Log("PlayerInventory::DoNullChecks() _numOfLives = 0! Set to _defaultNumOfLives.");}
     }
 }
+
