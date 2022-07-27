@@ -61,13 +61,13 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 914556593467380542}
   - {fileID: -915089663152181198}
   - {fileID: -6024878434842312512}
+  - {fileID: 914556593467380542}
   - {fileID: 4535307361991244560}
   - {fileID: 1798667563237460492}
-  - {fileID: 3971371376182189653}
   - {fileID: 1388239848053017423}
+  - {fileID: 3971371376182189653}
   - {fileID: -7783390731420718971}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -371,11 +371,11 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: -4659966743479449849}
-  - {fileID: 7912349753895430290}
   - {fileID: -1893243077072004242}
-  - {fileID: -3307549576341938876}
+  - {fileID: 7912349753895430290}
+  - {fileID: -4659966743479449849}
   - {fileID: -5024170017887815005}
+  - {fileID: -3307549576341938876}
   - {fileID: 9135994879496571509}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -607,8 +607,8 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7451780606287009529}
-  - {fileID: 1622358421025533684}
   - {fileID: 1736329074166533968}
+  - {fileID: 1622358421025533684}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
@@ -1031,7 +1031,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Freehang Climb
+  m_Name: Hanging Climbing
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1346,11 +1346,11 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 11144605594315025}
   - {fileID: -8477540233804437039}
+  - {fileID: 11144605594315025}
   - {fileID: 8663476915253866309}
-  - {fileID: -2493963938099140623}
   - {fileID: 5469509748554528989}
+  - {fileID: -2493963938099140623}
   - {fileID: 2669245876501779800}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -1489,12 +1489,12 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
+  - {fileID: -152578947529077579}
   - {fileID: 5756043271121990300}
   - {fileID: -608084251121625272}
-  - {fileID: -152578947529077579}
   - {fileID: 3064439926289369664}
-  - {fileID: 4311616763038277995}
   - {fileID: -4167366482204740035}
+  - {fileID: 4311616763038277995}
   - {fileID: 7700135239551469271}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -1569,7 +1569,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Freehang Drop
+  m_Name: Hanging Dropping
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

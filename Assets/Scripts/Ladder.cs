@@ -22,12 +22,8 @@ public class Ladder : MonoBehaviour {
     private void OnEnable() {
         if (_snapToBottomPosition == null || _snapToTopPosition == null) {
             foreach (Transform tran in transform.GetComponentsInChildren<Transform>()) {
-                if (tran.name == "SnapToBottomPosition") {
-                    _snapToBottomPosition = tran;
-                }
-                if (tran.name == "SnapToTopPosition") {
-                    _snapToTopPosition = tran;
-                }
+                if (tran.name == "SnapToBottomPosition") { _snapToBottomPosition = tran; }
+                if (tran.name == "SnapToTopPosition") { _snapToTopPosition = tran; }
             }
         }
         DoNullChecks();
