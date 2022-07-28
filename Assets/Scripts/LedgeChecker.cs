@@ -44,6 +44,7 @@ public class LedgeChecker : MonoBehaviour {
                 _playerController.DisableMovement();
                 DisableCharController();
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumpToHanging);
+                _playerTransform.parent = other.transform.parent.transform;
                 StartCoroutine(HangDelay());
             }
         }

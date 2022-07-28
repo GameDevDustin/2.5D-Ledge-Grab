@@ -66657,6 +66657,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4027897880459435421, guid: 569a07da871df6447bd4398f0c2a62ab,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.89
+      objectReference: {fileID: 0}
     - target: {fileID: 7364955565260257762, guid: 569a07da871df6447bd4398f0c2a62ab,
         type: 3}
       propertyPath: m_Name
@@ -66717,30 +66722,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7364955565260257764, guid: 569a07da871df6447bd4398f0c2a62ab,
+    - target: {fileID: 7529235073040859586, guid: 569a07da871df6447bd4398f0c2a62ab,
         type: 3}
-      propertyPath: _waypoints.Array.size
-      value: 2
+      propertyPath: m_Size.y
+      value: 2.665851
       objectReference: {fileID: 0}
-    - target: {fileID: 7364955565260257764, guid: 569a07da871df6447bd4398f0c2a62ab,
+    - target: {fileID: 7529235073040859586, guid: 569a07da871df6447bd4398f0c2a62ab,
         type: 3}
-      propertyPath: _waypoints.Array.data[0].x
-      value: 44.44
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7364955565260257764, guid: 569a07da871df6447bd4398f0c2a62ab,
+    - target: {fileID: 7529235073040859586, guid: 569a07da871df6447bd4398f0c2a62ab,
         type: 3}
-      propertyPath: _waypoints.Array.data[0].y
-      value: 39.53
+      propertyPath: m_Center.x
+      value: -4.8705673
       objectReference: {fileID: 0}
-    - target: {fileID: 7364955565260257764, guid: 569a07da871df6447bd4398f0c2a62ab,
+    - target: {fileID: 7529235073040859586, guid: 569a07da871df6447bd4398f0c2a62ab,
         type: 3}
-      propertyPath: _waypoints.Array.data[1].x
-      value: 44.44
-      objectReference: {fileID: 0}
-    - target: {fileID: 7364955565260257764, guid: 569a07da871df6447bd4398f0c2a62ab,
-        type: 3}
-      propertyPath: _waypoints.Array.data[1].y
-      value: 31.25
+      propertyPath: m_Center.y
+      value: -0.5496962
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 569a07da871df6447bd4398f0c2a62ab, type: 3}
