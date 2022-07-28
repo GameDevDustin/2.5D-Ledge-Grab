@@ -269,7 +269,7 @@ public class PlayerController : MonoBehaviour {
             _playerVelocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravityValue);
             _playerVelocity.x *= 1.5f;
         } else if (_startJump && _isGrounded) { //first jump
-            _animStatePriorToFirstJump = _playerAnimations.GetPlayerCharAnimState(); //track prior anim state for exitting jump
+            _animStatePriorToFirstJump = _playerAnimations.GetPlayerCharAnimState(); //track prior anim state for exiting jump
             _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.jumping);
             _playerVelocity.y += Mathf.Sqrt(_jumpHeight * -3.0f * _gravityValue); 
         } else if (_startJump && !_isGrounded && _currNumOfJumps < 2) { //double jump
