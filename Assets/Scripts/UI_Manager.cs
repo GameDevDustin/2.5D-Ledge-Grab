@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
@@ -10,14 +9,26 @@ public class UI_Manager : MonoBehaviour {
     [SerializeField] private TMP_Text _txtTimeRemaining;
     [SerializeField] private TMP_Text _txtLivesCount;
     [SerializeField] private TMP_Text _txtGameOver;
+    [SerializeField] private TMP_Text _txtVictory;
+    [SerializeField] private TMP_Text _txtEscToExit;
     private InputActions _inputActions;
     
 
     public void UpdateTimeRemaining(float timeRemaining) { _txtTimeRemaining.text = Mathf.Round(timeRemaining) + " seconds"; }
     public void UpdateLivesCount(int numOfLives) { _txtLivesCount.text = numOfLives.ToString(); }
     public void DisplayGameOver() {
-        _txtGameOver.text = "Game Over";
+        // _txtGameOver.text = "Game Over";
+        // _txtEscToExit.text = "Press the escape key to exit";
         _txtGameOver.gameObject.SetActive(true);
+        _txtEscToExit.gameObject.SetActive(true);
+        StartCoroutine(ReloadScene());
+    }
+
+    public void DisplayVictory() {
+        // _txtVictory.text = "You Win!";
+        // _txtEscToExit.text = "Press the escape key to exit";
+        _txtVictory.gameObject.SetActive(true);
+        _txtEscToExit.gameObject.SetActive(true);
         StartCoroutine(ReloadScene());
     }
     

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7639697163089809464}
   - component: {fileID: 7639697163089809465}
+  - component: {fileID: 945402969744861609}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -44,5 +45,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428ce120b935d6e428e0506827ffa505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerStartPosition: {x: 0, y: 0, z: 0}
-  _playerFinishPosition: {x: 0, y: 0, z: 0}
+  _timeRemaining: 90
+  _playerStartPosition: {x: -2.45, y: 1.63, z: 0}
+  _playerStartRotation: {x: 0, y: 0, z: 0}
+  _playerCharModelStartRotation: {x: 0, y: 90, z: 0}
+  _playerFinishPosition: {x: 23.9, y: 58.78, z: 0}
+  _uiManager: {fileID: 0}
+  _playerAnimations: {fileID: 0}
+--- !u!65 &945402969744861609
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7639697163089809467}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.5845585, y: 1, z: 4.7073655}
+  m_Center: {x: 1.806571, y: 0, z: 1.0890284}
