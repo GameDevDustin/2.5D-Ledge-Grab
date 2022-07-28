@@ -154,6 +154,34 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UI_Controls"",
+            ""id"": ""8dd86d3f-f49e-44f9-ab4b-0aa38be7732f"",
+            ""actions"": [
+                {
+                    ""name"": ""ExitGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""a2f520e9-ddba-463b-937c-d641df1d26f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8612d791-04c0-4b41-8a01-9dfa558ab8dd"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ExitGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -164,6 +192,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Use = m_Player.FindAction("Use", throwIfNotFound: true);
         m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
+        // UI_Controls
+        m_UI_Controls = asset.FindActionMap("UI_Controls", throwIfNotFound: true);
+        m_UI_Controls_ExitGame = m_UI_Controls.FindAction("ExitGame", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -276,11 +307,48 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI_Controls
+    private readonly InputActionMap m_UI_Controls;
+    private IUI_ControlsActions m_UI_ControlsActionsCallbackInterface;
+    private readonly InputAction m_UI_Controls_ExitGame;
+    public struct UI_ControlsActions
+    {
+        private @InputActions m_Wrapper;
+        public UI_ControlsActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ExitGame => m_Wrapper.m_UI_Controls_ExitGame;
+        public InputActionMap Get() { return m_Wrapper.m_UI_Controls; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UI_ControlsActions set) { return set.Get(); }
+        public void SetCallbacks(IUI_ControlsActions instance)
+        {
+            if (m_Wrapper.m_UI_ControlsActionsCallbackInterface != null)
+            {
+                @ExitGame.started -= m_Wrapper.m_UI_ControlsActionsCallbackInterface.OnExitGame;
+                @ExitGame.performed -= m_Wrapper.m_UI_ControlsActionsCallbackInterface.OnExitGame;
+                @ExitGame.canceled -= m_Wrapper.m_UI_ControlsActionsCallbackInterface.OnExitGame;
+            }
+            m_Wrapper.m_UI_ControlsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ExitGame.started += instance.OnExitGame;
+                @ExitGame.performed += instance.OnExitGame;
+                @ExitGame.canceled += instance.OnExitGame;
+            }
+        }
+    }
+    public UI_ControlsActions @UI_Controls => new UI_ControlsActions(this);
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnUse(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
+    }
+    public interface IUI_ControlsActions
+    {
+        void OnExitGame(InputAction.CallbackContext context);
     }
 }
