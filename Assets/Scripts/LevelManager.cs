@@ -34,7 +34,7 @@ public class LevelManager : MonoBehaviour {
         _timeRemaining -= Time.deltaTime; //decrement time
         _uiManager.UpdateTimeRemaining(_timeRemaining); //update UI
         
-        if (_timeRemaining <= 0f) { TriggerGameOver(); _timeRemaining = 0f; }
+        if (_timeRemaining <= 0f) { TriggerGameOver(); _timeRemaining = 0f; } //trigger game over when time runs out
     }
 
     private void TriggerGameOver() { _uiManager.DisplayGameOver(); }

@@ -22,6 +22,7 @@ public class UI_Manager : MonoBehaviour {
         yield return new WaitForSeconds(10f);
         SceneManager.LoadScene(0);
     }
+    
     private void DoNullChecks() {
         if (_txtTimeRemaining == null) { Debug.LogError("UI_Manager::DoNullChecks() _txtTimeRemaining is NULL!");}
         if (_txtLivesCount == null) { Debug.LogError("UI_Manager::DoNullChecks() _txtLivesCount is NULL!"); }

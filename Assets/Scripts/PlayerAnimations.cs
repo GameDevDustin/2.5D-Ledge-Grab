@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour {
-    public enum PlayerCharAnimState { idle, walking, running, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing, ladderClimbingUp, ladderClimbingDown, ladderDropping, ladderTopClimb }
+    public enum PlayerCharAnimState { idle, walking, running, runRolling, jumping, doubleJumping, jumpToHanging, hangingIdle, hangingDropping, hangingClimbing, ladderClimbingUp, ladderClimbingDown, ladderDropping, ladderTopClimb }
     public enum PlayerCharFacingDirection { left, right }
 
     [SerializeField] private PlayerCharFacingDirection _playerCharFacingDirection;
@@ -58,6 +58,7 @@ public class PlayerAnimations : MonoBehaviour {
             case PlayerCharAnimState.walking: _animator.SetBool("isWalking", true); break;
             case PlayerCharAnimState.running: _animator.SetBool("isRunning", true); break;
             case PlayerCharAnimState.jumping: _animator.SetBool("isJumping", true); break;
+            case PlayerCharAnimState.runRolling: _animator.SetBool("isRunRolling", true); break;
             case PlayerCharAnimState.doubleJumping: _animator.SetBool("isDoubleJumping", true); break;
             case PlayerCharAnimState.jumpToHanging: _animator.SetBool("isJumpToHanging", true); break;
             case PlayerCharAnimState.hangingIdle: _animator.SetBool("isHangingIdle", true); break;
@@ -97,6 +98,7 @@ public class PlayerAnimations : MonoBehaviour {
         _animator.SetBool("isIdle", false);
         _animator.SetBool("isWalking", false);
         _animator.SetBool("isRunning", false);
+        _animator.SetBool("isRunRolling", false);
         _animator.SetBool("isJumping", false);
         _animator.SetBool("isDoubleJumping", false);
         _animator.SetBool("isJumpToHanging", false);

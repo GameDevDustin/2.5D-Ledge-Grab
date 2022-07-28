@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Jump.started += JumpOnStarted;
         _inputActions.Player.Jump.canceled += JumpOnCancelled;
         _inputActions.Player.Use.performed += UseOnPeformed;
+        _inputActions.Player.Roll.performed += RollOnStarted;
         _currNumOfJumps = 0;
         _movementDisabled = _canWallJump = _isWallJumping = _moveTowardsLadderSnapTo = _isClimbingLadder = _isClimbingLedge = false;
     }
@@ -101,6 +102,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Jump.started -= JumpOnStarted;
         _inputActions.Player.Jump.canceled -= JumpOnCancelled;
         _inputActions.Player.Use.performed -= UseOnPeformed;
+        _inputActions.Player.Roll.performed -= RollOnStarted;
     }
     
     //Event Subscribers
@@ -150,6 +152,13 @@ public class PlayerController : MonoBehaviour {
         _isHangingFromLedge = false;
         _isClimbingLedge = false; //Set flag false so that player can now enter ladder climb again
         EnableMovement();
+    }
+
+    private void RollOnStarted(InputAction.CallbackContext context) {
+        if (_playerAnimations.GetPlayerCharAnimState() == PlayerAnimations.PlayerCharAnimState.running) {
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.runRolling);
+            _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.running, 0.05f);
+        }
     }
     
     //Physics
