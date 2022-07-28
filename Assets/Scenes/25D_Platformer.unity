@@ -28409,6 +28409,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ladder_01
       objectReference: {fileID: 0}
+    - target: {fileID: 2986440635262291995, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.154
+      objectReference: {fileID: 0}
+    - target: {fileID: 2986440635262291995, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.556
+      objectReference: {fileID: 0}
+    - target: {fileID: 2986440635262291995, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8196345027196169239, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.216
+      objectReference: {fileID: 0}
+    - target: {fileID: 8196345027196169239, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.669
+      objectReference: {fileID: 0}
+    - target: {fileID: 8196345027196169239, guid: 4b65a49fc22b0534ea21f15f5305d779,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b65a49fc22b0534ea21f15f5305d779, type: 3}
 --- !u!4 &1046884239 stripped
