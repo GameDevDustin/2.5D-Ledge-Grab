@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private bool _isClimbingLadder;
     [Tooltip("Character is being snapped to a ladder.")]
     [SerializeField] private bool _moveTowardsLadderSnapTo;
+    [Tooltip("Character is allowed to start climbing a ladder.")]
+    [SerializeField] private bool _canClimbLadder;
     [Space] [Tooltip("Character is climbing a ledge.")]
     [SerializeField] private bool _isClimbingLedge;
     [Tooltip("Character is hanging from a ledge.")]
@@ -85,6 +87,7 @@ public class PlayerController : MonoBehaviour {
         _inputActions.Player.Roll.performed += RollOnStarted;
         _currNumOfJumps = 0;
         _movementDisabled = _canWallJump = _isWallJumping = _moveTowardsLadderSnapTo = _isClimbingLadder = _isClimbingLedge = false;
+        _canClimbLadder = true;
     }
 
     private void Start() {
@@ -150,7 +153,7 @@ public class PlayerController : MonoBehaviour {
         _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle);
         _playerVelocity = Vector3.zero;
         _isHangingFromLedge = false;
-        _isClimbingLedge = false; //Set flag false so that player can now enter ladder climb again
+        _isClimbingLedge = false; //Set flag false so that player can now enter ledge climb again
         EnableMovement();
     }
 
@@ -169,17 +172,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnAnimatorIK(int layerIndex) { transform.position = _playerAnimations.GetAnimator().bodyPosition; }
-    
+
     private void OnTriggerEnter(Collider other) {
         if (other.tag.ToLower().StartsWith("moving")) { //Collided with a moving platform or elevator
             if (other.tag.ToLower() == "movingelevator") { transform.parent = other.transform.GetChild(0);
             } else { transform.parent = other.transform; }
-        } else if (other.CompareTag("Ladder") && !_isClimbingLedge) { ClimbLadder(other); } //Collided with a ladder
+        }
+        else if (other.CompareTag("Ladder") && !_isClimbingLedge && _canClimbLadder) { _canClimbLadder = false; ClimbLadder(other); } //Collided with a ladder}
     }
 
     private void OnTriggerExit(Collider other) {
         if (other.tag.ToLower().StartsWith("moving")) { transform.parent = null; } //Moving platform or elevator
-        else if (other.CompareTag("Ladder")) { _isClimbingLedge = false; }  //Reset playerIsClimbing flag after dropping down from ladder
+        else if (other.CompareTag("Ladder")) {
+            _isClimbingLedge = false; 
+            _canClimbLadder = true;
+        }  //Reset _isClimbingLedge and _canClimbLaddar flag after dropping down from ladder
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit) {
@@ -360,7 +367,7 @@ public class PlayerController : MonoBehaviour {
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
                 StartCoroutine(ClimbDelaySetPlayerGOPosition(3f, false, true)); //Delay should be ~ animation duration
             } else { //Player is dropping down from a ladder
-                _isClimbingLedge = true;
+                // _isClimbingLedge = true;
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.25f);
             }

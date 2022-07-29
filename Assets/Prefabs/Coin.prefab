@@ -44,7 +44,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4393480461467316408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ae6d7cdc89f4b64c97b45295e9f7e40, type: 3}
+  m_Script: {fileID: 11500000, guid: aaaee2ef6f020cf4f9455f0bd3be7098, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _numOfCoins: 0
