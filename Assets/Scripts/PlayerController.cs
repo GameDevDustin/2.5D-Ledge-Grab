@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Ladder.LadderAngle _currentLadderAngle;
     [Tooltip("The current position on the ladder the character will snap to before climbing.")]
     [SerializeField] private Vector3 _ladderSnapToPosition;
+    [Tooltip("Position player should snap to when exitting bottom of ladder.")] [SerializeField]
+    private Vector3 _ladderSnapToBottomExitPosition;
     [Tooltip("The position on the ladder when the character should transition to an exit sequence.")]
     [SerializeField] private Vector3 _ladderReachedEndPosition;
     [Space][Header("References")]
@@ -334,6 +336,7 @@ public class PlayerController : MonoBehaviour {
             _movePlayerDirectionOnLadder = MovePlayerDirectionOnLadder.up;
         } else if (ladderSnapToLocation == Ladder.LadderSnapToLocations.top) { //Snap to top of ladder
             _ladderSnapToPosition = snapToTopPosition.position;
+            _ladderSnapToBottomExitPosition = ladder.GetSnapToBottomExitPosition().position;
             _ladderReachedEndPosition = reachedBottomPosition.position;
             _movePlayerDirectionOnLadder = MovePlayerDirectionOnLadder.down;
         }
@@ -364,15 +367,24 @@ public class PlayerController : MonoBehaviour {
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
                 StartCoroutine(ClimbDelaySetPlayerGOPosition(3f, false, true)); //Delay should be ~ animation duration
             } else { //Player is dropping down from a ladder
+                transform.position = Vector3.MoveTowards(transform.position, _ladderSnapToBottomExitPosition, _snapToMoveSpeed * 2 * Time.deltaTime);
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
-                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.25f);
-            }
-
-            if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.down) { //Execute after idle anim plays from above
+                _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.15f);
+                
+                //Execute after idle anim plays from above
                 EnableMovement(0.27f); 
                 if (_currentLadderAngle == Ladder.LadderAngle.topLeftToBottomRight) { _playerAnimations.CharFaceRight(); //face char away from ladder
                 } else { _playerAnimations.CharFaceLeft(); } //face char away from ladder
+                
+                
+                // transform.position = Vector3.MoveTowards(transform.position, _ladderSnapToBottomExitPosition, _snapToMoveSpeed * Time.deltaTime);
             }
+
+            // if (_movePlayerDirectionOnLadder == MovePlayerDirectionOnLadder.down) { //Execute after idle anim plays from above
+            //     EnableMovement(0.27f); 
+            //     if (_currentLadderAngle == Ladder.LadderAngle.topLeftToBottomRight) { _playerAnimations.CharFaceRight(); //face char away from ladder
+            //     } else { _playerAnimations.CharFaceLeft(); } //face char away from ladder
+            // }
         }
     }
     
