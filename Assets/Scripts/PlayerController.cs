@@ -183,10 +183,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (other.tag.ToLower().StartsWith("moving")) { transform.parent = null; } //Moving platform or elevator
-        else if (other.CompareTag("Ladder")) {
-            _isClimbingLedge = false; 
-            _canClimbLadder = true;
-        }  //Reset _isClimbingLedge and _canClimbLaddar flag after dropping down from ladder
+        else if (other.CompareTag("Ladder")) { _isClimbingLedge = false; _canClimbLadder = true; }  //Reset _isClimbingLedge and _canClimbLaddar flag after dropping down from ladder
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit) {
@@ -367,7 +364,6 @@ public class PlayerController : MonoBehaviour {
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderTopClimb);
                 StartCoroutine(ClimbDelaySetPlayerGOPosition(3f, false, true)); //Delay should be ~ animation duration
             } else { //Player is dropping down from a ladder
-                // _isClimbingLedge = true;
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.ladderDropping);
                 _playerAnimations.UpdatePlayerCharAnimState(PlayerAnimations.PlayerCharAnimState.idle, 0.25f);
             }
